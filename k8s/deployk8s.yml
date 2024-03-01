@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recofilms-deploy
+  labels:
+    app: recofilms-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: recofilms-app
+  template:
+    metadata:
+      labels:
+        app: recofilms-app
+    spec:
+      containers:
+        - name: appclient
+          env:
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name:  movieflix
+                key: SECRET_KEY
+          - name: ALGORITHM
+            valueFrom:
+              secretKeyRef:
+                name:  movieflix
+                key: ALGORITHM          
+          - name: ACCESS_TOKEN_EXPIRATION
+            valueFrom:
+              secretKeyRef:
+                name:  movieflix
+                key: ACCESS_TOKEN_EXPIRATION
+          - name: DBNAME
+            valueFrom:
+              secretKeyRef:
+                name:  movieflix
+                key: DBNAME
+          - name: USER
+            valueFrom:
+              secretKeyRef:
+                name:  movieflix
+                key: USER          
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name:  movieflix
+                key: PASSWORD
+          - name: HOST
+            valueFrom:
+              secretKeyRef:
+                name:  movieflix
+                key: HOST
+          - name: PORT
+            valueFrom:
+              secretKeyRef:
+                name:  movieflix
+                key: PORT
+          - name: MLFLOW_SERVER
+            valueFrom:
+              secretKeyRef:
+                name:  movieflix
+                key: MLFLOW_SERVER
+          - name: MLFLOW_MODELID
+            valueFrom:
+              configMapKeyRef:
+                name: movieflix
+                key: MLFLOW_MODELID
+          # image: recofilmsmlopsoct2023/appclient:latest
+          image: recofilmsmlopsoct2023/movieflix:latest
+          imagePullPolicy: "Always"
+          ports:
+          - containerPort: 8001
